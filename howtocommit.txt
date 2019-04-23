@@ -1,0 +1,4 @@
+To upload a script to git, run this:
+git add [new file]
+git commit -m "memo"
+git push
