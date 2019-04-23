@@ -33,7 +33,7 @@ for (( i=0; i<$((RANDOM % 10 + 1)); i++)); do	# $((RANDOM % 10+ 1)) -->> generat
 	# finds the file and shuffles, picks the first one
 	file_var=$(find . -name 'file_*' | shuf -n 1) 
 	
-	echo "Copying and renaming ${file_var}"
+	#echo "Copying and renaming ${file_var}"
         
  	cp ./${file_var} ./rando_copy_$(cat /dev/urandom | LC_CTYPE=C tr -dc "[:alpha:]" | head -c 3);
 	
