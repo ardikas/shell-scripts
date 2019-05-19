@@ -15,7 +15,7 @@ validate_ip(){
 	IFS=. 
 	set -- $ip_input
 
-	echo $ip_input
+	echo "$ip_input  ****"
 	
 	if [[ "$#" -ne "4" ]]; then
 		echo "IP address must contain 4 octets"
@@ -23,9 +23,13 @@ validate_ip(){
 		return "$return_validate"
 	fi
 	
-	for octet in $1 $2 $3 $4
-	do
-		if [[ $? -ne "0" ]]; then 
+	for octet in $1 $2 $3 $4; do
+		
+		# this will return a 0 if $octet contains numbers, return a 1 if there are any letters. 
+		# /dev/null redirects standard output (stdout) to /dev/null, which discards it.
+		echo $octet | egrep "^[0-9]+$" >/dev/null 2>&1
+		
+		if [[ "$?" -ne "0" ]]; then
 			echo "$octet: IPv4 address cannot contain alphabet letters."
 			return_validate=2
 			return "$return_validate"
@@ -35,7 +39,8 @@ validate_ip(){
 			return "$return_validate"
 		fi
 	done	
-	return 0
+	return_valid_ip=0
+	return "$return_valid_ip"
 } 
 
 
@@ -52,4 +57,10 @@ done
 # call function
 validate_ip
 
-echo $octet
+if [[ "$return_valid_ip" != "0" ]]; then
+	echo "Please try again."
+	exit 1
+elif [[ "$return_valid_ip" == "0" ]]; then
+	echo "$ip_input is valid!"
+fi
+exit 0
