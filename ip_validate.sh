@@ -10,10 +10,7 @@
 # https://unix.stackexchange.com/questions/308260/what-does-set-do-in-this-dockerfile-entrypoint/308263
 
 # validate ip function
-validate_ip() {
-
-
-
+validate_ip(){
 	echo "You've reached the function"
 	IFS=. 
 	set -- $ip_input
@@ -22,16 +19,25 @@ validate_ip() {
 	
 	if [[ "$#" -ne "4" ]]; then
 		echo "IP address must contain 4 octets"
-		exit 1
+		return_validate=1
+		return "$return_validate"
 	fi
 	
-	for octet in $1 $2 $3 $4; do
-	#	echo $octet | 
-	if [[ "$?" -ne "0" ]]; do
-		echo "$octet: IPv4 address cannot contain alphabet letters."
-		exit 1
-	elif [[ $octet -lt "0" || 
-}
+	for octet in $1 $2 $3 $4
+	do
+		if [[ $? -ne "0" ]]; then 
+			echo "$octet: IPv4 address cannot contain alphabet letters."
+			return_validate=2
+			return "$return_validate"
+		elif [[ "$octet" -lt "0" ]] || [[ "$octet" -gt "255" ]]; then
+			echo "$octet: IP address is invalid. Out of range."
+			return_validate=3
+			return "$return_validate"
+		fi
+	done	
+	return 0
+} 
+
 
 ip_input=$1
 echo "$ip_input"
@@ -46,3 +52,4 @@ done
 # call function
 validate_ip
 
+echo $octet
