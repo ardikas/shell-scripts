@@ -11,12 +11,15 @@
 
 # validate ip function
 validate_ip(){
-	echo "You've reached the function"
-	IFS=. 
-	set -- $ip_input
-
-	echo "$ip_input  ****"
+	echo ""
+	echo "User input: $ip_input"
+	#echo "valiate_ip() was called."
 	
+	# set the Internal Field Separator to '.'
+	IFS=. 
+	set -- $ip_input   # I sort of forgot what this does
+
+	# "$#" stores the number of command line arguments that were passed to the shell program
 	if [[ "$#" -ne "4" ]]; then
 		echo "IP address must contain 4 octets"
 		return_validate=1
@@ -30,7 +33,7 @@ validate_ip(){
 		echo $octet | egrep "^[0-9]+$" >/dev/null 2>&1
 		
 		if [[ "$?" -ne "0" ]]; then
-			echo "$octet: IPv4 address cannot contain alphabet letters."
+			echo "$octet: IPv4 address cannot contain alphabet letters or special characters!"
 			return_validate=2
 			return "$return_validate"
 		elif [[ "$octet" -lt "0" ]] || [[ "$octet" -gt "255" ]]; then
@@ -45,22 +48,23 @@ validate_ip(){
 
 
 ip_input=$1
-echo "$ip_input"
-
 
 # If user input is empty, prompt again	
 while [[ -z "$ip_input" ]]; do
-	read -p "No IP was given. Please enter an IP address:" ip_input
 	echo ""
+	read -p "No IP was given. Please enter an IP address:" ip_input
 done
 
 # call function
 validate_ip
 
+# finale
 if [[ "$return_valid_ip" != "0" ]]; then
 	echo "Please try again."
+	echo ""
 	exit 1
 elif [[ "$return_valid_ip" == "0" ]]; then
 	echo "$ip_input is valid!"
+	echo ""
 fi
 exit 0
