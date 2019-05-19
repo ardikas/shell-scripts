@@ -46,7 +46,7 @@ validate_ip(){
 	return "$return_valid_ip"
 } 
 
-
+# get user input
 ip_input=$1
 
 # If user input is empty, prompt again	
