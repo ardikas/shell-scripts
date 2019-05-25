@@ -15,14 +15,27 @@ validate_ip(){
 	echo "User input: $ip_input"
 	#echo "valiate_ip() was called."
 	
+	front_dot=$(echo $ip_input | fold -w 1 | head -1)
+	end_dot=$(echo $ip_input | fold -w 1 | tail -1 )
+	
+	if [[ $front_dot == "." ]]; then
+  		echo "IP address cannot have a decimal in the beginning!"
+		return_validate=1
+		return "$return_validate"
+	elif [[ $end_dot == "." ]]; then
+		echo "IP address cannot end in a decimal!"
+		return_validate=2
+		return "$return_validate"
+	fi
+
 	# set the Internal Field Separator to '.'
 	IFS=. 
 	set -- $ip_input   # I sort of forgot what this does
 
 	# "$#" stores the number of command line arguments that were passed to the shell program
-	if [[ "$#" -ne "4" ]]; then
+	if [[ "$#" -ne "4" ]] || [[ "$#" -gt "4" ]]; then
 		echo "IP address must contain 4 octets"
-		return_validate=1
+		return_validate=2
 		return "$return_validate"
 	fi
 	
@@ -34,11 +47,11 @@ validate_ip(){
 		
 		if [[ "$?" -ne "0" ]]; then
 			echo "$octet: IPv4 address cannot contain alphabet letters or special characters!"
-			return_validate=2
+			return_validate=3
 			return "$return_validate"
 		elif [[ "$octet" -lt "0" ]] || [[ "$octet" -gt "255" ]]; then
 			echo "$octet: IP address is invalid. Out of range."
-			return_validate=3
+			return_validate=4
 			return "$return_validate"
 		fi
 	done	
