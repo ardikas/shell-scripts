@@ -7,7 +7,7 @@ for region in `aws ec2 describe-regions --region us-east-1 --output text | cut -
 do
      # List the number of instances per region
      echo -e "\nNumber of instances in region:'$region'..."
-     aws ec2 describe-instances --region $region | grep -i "instanceid" | wc -l
+     aws ec2 describe-instances --region $region --query 'Reservations[*].Instances[*].InstanceId' --output text | wc -l
 
      # Add up the total
      count=$((count + 1))
